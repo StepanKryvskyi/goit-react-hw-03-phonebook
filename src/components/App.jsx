@@ -31,21 +31,45 @@ export default class App extends Component {
     }));
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const paseredContacts = JSON.parse(contacts);
+
+    if (paseredContacts) {
+      this.setState({ contacts: paseredContacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const normalisedFilter = this.state.filter.toLowerCase();
 
     const filterContacts = this.state.contacts.filter(contact =>
-      contact.text.toLowerCase().includes(normalisedFilter)
+      contact.text
+        .replace(/\s+/g, '')
+        .toLowerCase()
+        .includes(normalisedFilter.replace(/\s+/g, ''))
     );
 
     return (
       <div className="Container">
         <h1>Phonebook</h1>
-        <ContactForm contacts={this.state.contacts} onSubmit={this.handleAddContact} />
+        <ContactForm
+          contacts={this.state.contacts}
+          onSubmit={this.handleAddContact}
+        />
 
         <h2>Contacts</h2>
         <Filter filter={this.state.filter} changeFilter={this.changeFilter} />
-        <ContactList contacts={filterContacts} onDeleteContact={this.deleteContact} />
+        <ContactList
+          contacts={filterContacts}
+          onDeleteContact={this.deleteContact}
+        />
       </div>
     );
   }

@@ -18,7 +18,8 @@ handleSubmit = e => {
 
   const { name, number } = this.state;
 
-  if (this.props.contacts.some(contact => contact.text === name)) {
+  if (this.props.contacts.some(contact => contact.text.toLowerCase() === name.toLowerCase())) {
+
     alert(`${name} is already in contacts.`);
     this.setState({ name: '' }); 
   } else {
